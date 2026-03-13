@@ -87,47 +87,47 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-void text-parchment">
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4 pb-8 pt-6 sm:px-6">
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-3 pb-6 pt-3 sm:px-6 sm:pt-6">
         {/* ── Header ── */}
-        <section className="rounded-[2rem] border border-parchment/8 bg-surface p-6 shadow-card">
+        <section className="rounded-[1.5rem] border border-parchment/8 bg-surface p-4 shadow-card sm:rounded-[2rem] sm:p-6">
           <p className="text-xs uppercase tracking-[0.26em] text-ash">
             Vasana Tracker
           </p>
-          <h1 className="mt-3 font-display text-4xl leading-tight text-parchment">
+          <h1 className="mt-2 font-display text-3xl leading-tight text-parchment sm:mt-3 sm:text-4xl">
             Witness the tendency.
             <br />
             Know the self.
           </h1>
-          <p className="mt-4 max-w-xs text-sm leading-6 text-ash">
+          <p className="mt-2 max-w-xs text-xs leading-5 text-ash sm:mt-4 sm:text-sm sm:leading-6">
             Each vasana is a window into your conditioning. Observe without
             judgment — simply notice what arises and how often.
           </p>
 
           {/* Stats row */}
-          <div className="mt-6 grid grid-cols-3 gap-2">
-            <div className="rounded-2xl bg-void px-3 py-3">
+          <div className="mt-3 grid grid-cols-3 gap-1.5 sm:mt-6 sm:gap-2">
+            <div className="rounded-xl bg-void px-2 py-2 sm:rounded-2xl sm:px-3 sm:py-3">
               <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
                 Today
               </p>
-              <p className="mt-1.5 text-xs leading-snug text-parchment/80">
+              <p className="mt-1 text-[11px] leading-snug text-parchment/80 sm:mt-1.5 sm:text-xs">
                 {formatToday()}
               </p>
             </div>
 
-            <div className="rounded-2xl bg-void px-3 py-3 text-center">
+            <div className="rounded-xl bg-void px-2 py-2 text-center sm:rounded-2xl sm:px-3 sm:py-3">
               <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
                 Nourishing
               </p>
-              <p className="mt-1.5 text-2xl font-semibold leading-none text-moss">
+              <p className="mt-1 text-xl font-semibold leading-none text-moss sm:mt-1.5 sm:text-2xl">
                 {nourishingCount}
               </p>
             </div>
 
-            <div className="rounded-2xl bg-void px-3 py-3 text-center">
+            <div className="rounded-xl bg-void px-2 py-2 text-center sm:rounded-2xl sm:px-3 sm:py-3">
               <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
                 Limiting
               </p>
-              <p className="mt-1.5 text-2xl font-semibold leading-none text-ember">
+              <p className="mt-1 text-xl font-semibold leading-none text-ember sm:mt-1.5 sm:text-2xl">
                 {limitingCount}
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function App() {
         </section>
 
         {/* ── Input + list card ── */}
-        <section className="mt-4 rounded-[2rem] border border-parchment/8 bg-surface p-4 shadow-card">
+        <section className="mt-3 rounded-[1.5rem] border border-parchment/8 bg-surface p-3.5 shadow-card sm:mt-4 sm:rounded-[2rem] sm:p-4">
           {/* Input form */}
           <div className="space-y-3">
             <label className="block">
