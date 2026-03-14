@@ -4,25 +4,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Backgrounds — layered dark warmth
-        void: "#0d0c0b", // page background
-        surface: "#161412", // card / section background
-        raised: "#1e1c19", // inputs, recessed elements
+        // Backgrounds — still dark, but lifted for better comfort/contrast
+        void: "#16181d", // page background
+        surface: "#1f232b", // card / section background
+        raised: "#2a2f39", // inputs, recessed elements
 
         // Text
-        parchment: "#ddd4c8", // primary text
-        ash: "#6b6460", // muted / secondary text
+        parchment: "#ece7de", // primary text
+        ash: "#a9b0bc", // muted / secondary text
 
-        // Category accents (tuned for readability on dark surfaces)
-        moss: "#72a874", // Nourishing — sage green
-        ember: "#c97a55", // Limiting   — warm terracotta
-        clay: "#7a7068", // Neutral    — warm mid-grey
+        // Category accents — cooler, more cohesive with slate-dark base
+        moss: "#7fcf9a", // Nourishing
+        ember: "#f29a74", // Limiting
+        clay: "#93a1b5", // Neutral
 
         // Focus indicator
-        gold: "#c4974a",
+        gold: "#e0b968",
       },
       boxShadow: {
-        card: "0 4px 32px rgba(0, 0, 0, 0.55)",
+        card: "0 8px 30px rgba(0, 0, 0, 0.35)",
       },
       fontFamily: {
         display: ["Georgia", "serif"],

@@ -6,8 +6,8 @@
     font-family: Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
-    color: #ddd4c8;
-    background: #0d0c0b;
+    color: #ece7de;
+    background: #16181d;
     color-scheme: dark;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -16,7 +16,7 @@
 }
 
 html {
-    background: #0d0c0b;
+    background: #16181d;
 }
 
 body {
