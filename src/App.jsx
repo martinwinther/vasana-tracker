@@ -87,25 +87,25 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-void text-parchment">
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-3 pb-6 pt-3 sm:px-6 sm:pt-6">
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-3 pb-4 pt-2 sm:px-6 sm:pt-4">
         {/* ── Header ── */}
-        <section className="rounded-[1.5rem] border border-parchment/8 bg-surface p-4 shadow-card sm:rounded-[2rem] sm:p-6">
+        <section className="rounded-[1.5rem] border border-parchment/6 bg-surface/70 p-3 shadow-none sm:rounded-[2rem] sm:p-4">
           <p className="text-xs uppercase tracking-[0.26em] text-ash">
             Vasana Tracker
           </p>
-          <h1 className="mt-2 font-display text-3xl leading-tight text-parchment sm:mt-3 sm:text-4xl">
+          <h1 className="mt-1.5 font-display text-2xl leading-tight text-parchment/90 sm:mt-2 sm:text-3xl">
             Witness the tendency.
             <br />
             Know the self.
           </h1>
-          <p className="mt-2 max-w-xs text-xs leading-5 text-ash sm:mt-4 sm:text-sm sm:leading-6">
+          <p className="mt-1.5 max-w-xs text-[11px] leading-4 text-ash/80 sm:mt-2 sm:text-xs sm:leading-5">
             Each vasana is a window into your conditioning. Observe without
             judgment — simply notice what arises and how often.
           </p>
 
           {/* Stats row */}
-          <div className="mt-3 grid grid-cols-3 gap-1.5 sm:mt-6 sm:gap-2">
-            <div className="rounded-xl bg-void px-2 py-2 sm:rounded-2xl sm:px-3 sm:py-3">
+          <div className="mt-2 grid grid-cols-3 gap-1 sm:mt-3 sm:gap-1.5">
+            <div className="rounded-lg bg-void/70 px-2 py-1.5 sm:rounded-xl sm:px-2.5 sm:py-2">
               <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
                 Today
               </p>
@@ -114,7 +114,7 @@ export default function App() {
               </p>
             </div>
 
-            <div className="rounded-xl bg-void px-2 py-2 text-center sm:rounded-2xl sm:px-3 sm:py-3">
+            <div className="rounded-lg bg-void/70 px-2 py-1.5 text-center sm:rounded-xl sm:px-2.5 sm:py-2">
               <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
                 Nourishing
               </p>
@@ -123,7 +123,7 @@ export default function App() {
               </p>
             </div>
 
-            <div className="rounded-xl bg-void px-2 py-2 text-center sm:rounded-2xl sm:px-3 sm:py-3">
+            <div className="rounded-lg bg-void/70 px-2 py-1.5 text-center sm:rounded-xl sm:px-2.5 sm:py-2">
               <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
                 Limiting
               </p>
@@ -135,11 +135,11 @@ export default function App() {
         </section>
 
         {/* ── Input + list card ── */}
-        <section className="mt-3 rounded-[1.5rem] border border-parchment/8 bg-surface p-3.5 shadow-card sm:mt-4 sm:rounded-[2rem] sm:p-4">
+        <section className="mt-2 rounded-[1.5rem] border border-parchment/12 bg-surface p-4 sm:mt-3 sm:rounded-[2rem] sm:p-5 shadow-card">
           {/* Input form */}
           <div className="space-y-3">
             <label className="block">
-              <span className="mb-2 block text-xs font-medium uppercase tracking-[0.18em] text-ash">
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-ash/90">
                 New vasana
               </span>
               <textarea
@@ -149,7 +149,6 @@ export default function App() {
                 rows={3}
                 placeholder="Describe this tendency as it appears in you…"
                 className="w-full appearance-none resize-none rounded-2xl border border-parchment/10 bg-raised px-4 py-3 text-base text-parchment outline-none transition placeholder:text-ash/50 focus:border-ember/50 focus:ring-2 focus:ring-ember/10"
-                style={{ backgroundColor: "#1e1c19" }}
               />
             </label>
 
