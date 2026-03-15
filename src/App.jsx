@@ -45,6 +45,7 @@ const TYPE_META = {
 export default function App() {
   const [draft, setDraft] = useState("");
   const [vasanas, setVasanas] = useState([]);
+  const [mobileHeaderExpanded, setMobileHeaderExpanded] = useState(false);
 
   const focusedVasana = vasanas.find((v) => v.focused) ?? null;
 
@@ -90,46 +91,68 @@ export default function App() {
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-3 pb-4 pt-2 sm:px-6 sm:pt-4">
         {/* ── Header ── */}
         <section className="rounded-[1.5rem] border border-parchment/6 bg-surface/70 p-3 shadow-none sm:rounded-[2rem] sm:p-4">
-          <p className="text-xs uppercase tracking-[0.26em] text-ash">
-            Vasana Tracker
-          </p>
-          <h1 className="mt-1.5 font-display text-2xl leading-tight text-parchment/90 sm:mt-2 sm:text-3xl">
-            Witness the tendency.
-            <br />
-            Know the self.
-          </h1>
-          <p className="mt-1.5 max-w-xs text-[11px] leading-4 text-ash/80 sm:mt-2 sm:text-xs sm:leading-5">
-            Each vasana is a window into your conditioning. Observe without
-            judgment — simply notice what arises and how often.
-          </p>
-
-          {/* Stats row */}
-          <div className="mt-2 grid grid-cols-3 gap-1 sm:mt-3 sm:gap-1.5">
-            <div className="rounded-lg bg-void/70 px-2 py-1.5 sm:rounded-xl sm:px-2.5 sm:py-2">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
-                Today
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-[0.26em] text-ash">
+                Vasana Tracker
               </p>
-              <p className="mt-1 text-[11px] leading-snug text-parchment/80 sm:mt-1.5 sm:text-xs">
-                {formatToday()}
-              </p>
+              <h1 className="mt-1.5 font-display text-2xl leading-tight text-parchment/90 sm:mt-2 sm:text-3xl">
+                Witness the tendency.
+                <br />
+                Know the self.
+              </h1>
             </div>
 
-            <div className="rounded-lg bg-void/70 px-2 py-1.5 text-center sm:rounded-xl sm:px-2.5 sm:py-2">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
-                Nourishing
-              </p>
-              <p className="mt-1 text-xl font-semibold leading-none text-moss sm:mt-1.5 sm:text-2xl">
-                {nourishingCount}
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={() => setMobileHeaderExpanded((prev) => !prev)}
+              className="mt-0.5 shrink-0 rounded-full border border-parchment/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-ash/90 sm:hidden"
+              aria-expanded={mobileHeaderExpanded}
+              aria-controls="mobile-header-details"
+            >
+              {mobileHeaderExpanded ? "Hide" : "Info"}
+            </button>
+          </div>
 
-            <div className="rounded-lg bg-void/70 px-2 py-1.5 text-center sm:rounded-xl sm:px-2.5 sm:py-2">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
-                Limiting
-              </p>
-              <p className="mt-1 text-xl font-semibold leading-none text-ember sm:mt-1.5 sm:text-2xl">
-                {limitingCount}
-              </p>
+          <div
+            id="mobile-header-details"
+            className={
+              mobileHeaderExpanded ? "mt-1.5 block sm:block" : "hidden sm:block"
+            }
+          >
+            <p className="max-w-xs text-[11px] leading-4 text-ash/80 sm:mt-2 sm:text-xs sm:leading-5">
+              Each vasana is a window into your conditioning. Observe without
+              judgment — simply notice what arises and how often.
+            </p>
+
+            {/* Stats row */}
+            <div className="mt-2 grid grid-cols-3 gap-1 sm:mt-3 sm:gap-1.5">
+              <div className="rounded-lg bg-void/70 px-2 py-1.5 sm:rounded-xl sm:px-2.5 sm:py-2">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
+                  Today
+                </p>
+                <p className="mt-1 text-[11px] leading-snug text-parchment/80 sm:mt-1.5 sm:text-xs">
+                  {formatToday()}
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-void/70 px-2 py-1.5 text-center sm:rounded-xl sm:px-2.5 sm:py-2">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
+                  Nourishing
+                </p>
+                <p className="mt-1 text-xl font-semibold leading-none text-moss sm:mt-1.5 sm:text-2xl">
+                  {nourishingCount}
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-void/70 px-2 py-1.5 text-center sm:rounded-xl sm:px-2.5 sm:py-2">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-ash">
+                  Limiting
+                </p>
+                <p className="mt-1 text-xl font-semibold leading-none text-ember sm:mt-1.5 sm:text-2xl">
+                  {limitingCount}
+                </p>
+              </div>
             </div>
           </div>
         </section>
