@@ -1,4 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+function getTodayStr() {
+  const d = new Date();
+  return [
+    d.getFullYear(),
+    String(d.getMonth() + 1).padStart(2, "0"),
+    String(d.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function getYesterdayStr() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return [
+    d.getFullYear(),
+    String(d.getMonth() + 1).padStart(2, "0"),
+    String(d.getDate()).padStart(2, "0"),
+  ].join("-");
+}
 
 function formatToday() {
   return new Intl.DateTimeFormat("en-US", {
@@ -42,18 +61,38 @@ const TYPE_META = {
   },
 };
 
+const STORAGE_KEY = "vasana-tracker-v1";
+
 export default function App() {
   const [draft, setDraft] = useState("");
-  const [vasanas, setVasanas] = useState([]);
+  const [vasanas, setVasanas] = useState(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
   const [mobileHeaderExpanded, setMobileHeaderExpanded] = useState(false);
 
-  const focusedVasana = vasanas.find((v) => v.focused) ?? null;
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(vasanas));
+  }, [vasanas]);
 
-  const nourishingCount = vasanas
+  const today = getTodayStr();
+  const yesterday = getYesterdayStr();
+
+  // Vasanas without a date are treated as today (backwards compat)
+  const todayVasanas = vasanas.filter((v) => (v.date ?? today) === today);
+  const yesterdayVasanas = vasanas.filter((v) => v.date === yesterday);
+
+  const focusedVasana = todayVasanas.find((v) => v.focused) ?? null;
+
+  const nourishingCount = todayVasanas
     .filter((v) => v.type === NOURISHING)
     .reduce((sum, v) => sum + v.count, 0);
 
-  const limitingCount = vasanas
+  const limitingCount = todayVasanas
     .filter((v) => v.type === LIMITING)
     .reduce((sum, v) => sum + v.count, 0);
 
@@ -62,7 +101,14 @@ export default function App() {
     if (!value) return;
     setVasanas((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), text: value, type, count: 1, focused: false },
+      {
+        id: crypto.randomUUID(),
+        text: value,
+        type,
+        count: 1,
+        focused: false,
+        date: today,
+      },
     ]);
     setDraft("");
   }
@@ -84,6 +130,23 @@ export default function App() {
         focused: v.id === id ? !v.focused : false,
       })),
     );
+  }
+
+  // Removes the yesterday entry and adds a fresh today entry with count: 1
+  function reactivateVasana(id) {
+    const original = vasanas.find((v) => v.id === id);
+    if (!original) return;
+    setVasanas((prev) => [
+      ...prev.filter((v) => v.id !== id),
+      {
+        id: crypto.randomUUID(),
+        text: original.text,
+        type: original.type,
+        count: 1,
+        focused: false,
+        date: today,
+      },
+    ]);
   }
 
   return (
@@ -282,13 +345,14 @@ export default function App() {
               );
             })()}
 
-          {/* ── Vasana list (focused vasana is lifted out above) ── */}
+          {/* ── Today's vasana list ── */}
           {(() => {
-            const listed = vasanas
+            const listed = todayVasanas
               .map((v, i) => ({ vasana: v, originalIndex: i }))
               .filter(({ vasana }) => !vasana.focused);
 
-            if (vasanas.length === 0) {
+            // True empty state — nothing at all, today or yesterday
+            if (todayVasanas.length === 0 && yesterdayVasanas.length === 0) {
               return (
                 <div className="mt-4 rounded-2xl border border-dashed border-parchment/10 px-4 py-10 text-center">
                   <p className="font-display text-xl text-parchment/60">
@@ -385,6 +449,65 @@ export default function App() {
               </div>
             );
           })()}
+
+          {/* ── Yesterday's vasanas ── */}
+          {yesterdayVasanas.length > 0 && (
+            <div className="mt-6">
+              {/* Section divider */}
+              <div className="mb-3 flex items-center gap-3">
+                <div className="h-px flex-1 bg-parchment/8" />
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-ash/40">
+                  Yesterday
+                </p>
+                <div className="h-px flex-1 bg-parchment/8" />
+              </div>
+
+              <div className="space-y-2.5">
+                {yesterdayVasanas.map((vasana) => (
+                  <div
+                    key={vasana.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => reactivateVasana(vasana.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        reactivateVasana(vasana.id);
+                      }
+                    }}
+                    className="group w-full cursor-pointer select-none rounded-2xl border border-parchment/8 px-4 py-3.5 text-left transition-all duration-200 opacity-40 hover:opacity-75 active:scale-[0.99]"
+                    style={{ backgroundColor: "rgba(26,30,37,0.5)" }}
+                  >
+                    {/* Row 1: type pill (desaturated) | yesterday count */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-parchment/8 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-ash/60">
+                        <span className="h-1.5 w-1.5 rounded-full bg-ash/40" />
+                        {TYPE_META[vasana.type].label}
+                      </span>
+                      <div className="flex shrink-0 items-baseline gap-1">
+                        <span className="text-2xl font-semibold leading-none text-ash/40">
+                          {vasana.count}
+                        </span>
+                        <span className="text-[10px] uppercase tracking-wider text-ash/30">
+                          yesterday
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Row 2: text | Revive label */}
+                    <div className="mt-2.5 flex items-end justify-between gap-4">
+                      <p className="flex-1 text-base leading-6 text-parchment/45">
+                        {vasana.text}
+                      </p>
+                      <span className="shrink-0 rounded-full border border-parchment/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-ash/35 transition-colors duration-200 group-hover:border-parchment/25 group-hover:text-ash/60">
+                        Revive
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </main>
