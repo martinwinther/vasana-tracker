@@ -4,3 +4,8 @@ dist
 
 # Local Netlify folder
 .netlify
+
+# Environment variables — never commit real credentials
+.env
+.env.local
+.env.*.local
