@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   addDoc,
   updateDoc,
+  deleteDoc,
   doc,
   query,
   where,
@@ -187,6 +188,14 @@ export default function App() {
   // ── UI-only state ─────────────────────────────────────────────────────────────
   const [draft, setDraft] = useState("");
   const [focusedEntryId, setFocusedEntryId] = useState(null);
+  const [undoEntry, setUndoEntry] = useState(null);
+  const undoTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    };
+  }, []);
 
   // ── Derived ───────────────────────────────────────────────────────────────────
   const revivedIds = new Set(todayEntries.map((e) => e.vasanaId));
@@ -247,6 +256,44 @@ export default function App() {
     });
   }
 
+  function queueUndo(entry) {
+    setUndoEntry(entry);
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    undoTimerRef.current = setTimeout(() => {
+      setUndoEntry(null);
+      undoTimerRef.current = null;
+    }, 5000);
+  }
+
+  async function removeEntry(entry) {
+    setFocusedEntryId((prev) => (prev === entry.id ? null : prev));
+    await deleteDoc(doc(db, "entries", entry.id));
+    queueUndo(entry);
+  }
+
+  async function undoRemove() {
+    if (!undoEntry) return;
+
+    const entry = undoEntry;
+    setUndoEntry(null);
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
+
+    await addDoc(collection(db, "entries"), {
+      ...createEntry({
+        vasanaId: entry.vasanaId,
+        vasanaText: entry.vasanaText,
+        vasanaType: entry.vasanaType,
+        date: today,
+        count: entry.count,
+      }),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  }
+
   function toggleFocus(entryId) {
     setFocusedEntryId((prev) => (prev === entryId ? null : entryId));
   }
@@ -271,6 +318,11 @@ export default function App() {
 
   async function handleSignOut() {
     setFocusedEntryId(null);
+    setUndoEntry(null);
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
     await signOut(auth);
   }
 
@@ -457,6 +509,16 @@ export default function App() {
                       </span>
                     </div>
                   </div>
+
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => removeEntry(focusedEntry)}
+                      className="inline-flex items-center rounded-lg border border-ember/25 bg-ember/[0.08] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-ember/80 transition-all hover:bg-ember/[0.16] hover:text-ember"
+                    >
+                      Remove From Today
+                    </button>
+                  </div>
                 </div>
               );
             })()}
@@ -544,7 +606,7 @@ export default function App() {
                           </p>
                         </div>
 
-                        <div className="flex shrink-0 flex-col items-end gap-1">
+                        <div className="flex shrink-0 flex-col items-end gap-2">
                           <span
                             className={[
                               "text-2xl font-light tabular-nums leading-none",
@@ -553,16 +615,28 @@ export default function App() {
                           >
                             {entry.count}
                           </span>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleFocus(entry.id);
-                            }}
-                            className="text-[9px] font-bold uppercase tracking-[0.18em] text-ash/30 opacity-0 transition-all group-hover:opacity-100 hover:text-gold"
-                          >
-                            Focus
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeEntry(entry);
+                              }}
+                              className="inline-flex h-8 items-center justify-center rounded-lg border border-ember/25 bg-ember/[0.1] px-3 text-[9px] font-bold uppercase tracking-[0.16em] text-ember/90 transition-all hover:bg-ember/[0.2] sm:opacity-0 sm:group-hover:opacity-100"
+                            >
+                              Remove
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleFocus(entry.id);
+                              }}
+                              className="inline-flex h-8 items-center justify-center rounded-lg border border-gold/20 bg-gold/[0.06] px-3 text-[9px] font-bold uppercase tracking-[0.16em] text-gold/85 transition-all hover:bg-gold/[0.14] sm:opacity-0 sm:group-hover:opacity-100"
+                            >
+                              Focus
+                            </button>
+                          </div>
                         </div>
                       </div>
                     );
@@ -638,6 +712,26 @@ export default function App() {
           </section>
         </div>
       </div>
+
+      {undoEntry && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-4">
+          <div className="pointer-events-auto flex w-full max-w-md items-center justify-between gap-4 rounded-2xl border border-parchment/20 bg-surface/95 px-4 py-3 shadow-card backdrop-blur-sm">
+            <div className="min-w-0">
+              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ash/60">
+                Removed from today
+              </p>
+              <p className="truncate text-xs text-parchment/85">{undoEntry.vasanaText}</p>
+            </div>
+            <button
+              type="button"
+              onClick={undoRemove}
+              className="shrink-0 rounded-lg border border-gold/30 bg-gold/10 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold/20"
+            >
+              Undo
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
