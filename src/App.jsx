@@ -360,7 +360,7 @@ export default function App() {
           </div>
 
           {/* ── Input + list section ── */}
-          <section className="space-y-10">
+          <section className="space-y-8">
             {/* Input form */}
             <div className="relative overflow-hidden rounded-[1.75rem] border border-parchment/10 bg-void/40 p-4">
               <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-moss/10 blur-2xl" />
@@ -574,41 +574,66 @@ export default function App() {
 
           {/* ── Yesterday's entries ── */}
           {visibleYesterdayEntries.length > 0 && (
-            <div className="border-t border-parchment/10 pt-6">
-              <h3 className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-ash/50">
-                Yesterday
-              </h3>
+            <section className="relative overflow-hidden rounded-[1.75rem] border border-parchment/10 bg-void/30 px-4 py-5">
+              <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(216,222,233,0.24),transparent)]" />
+
+              <div className="mb-4 flex items-end justify-between gap-3">
+                <div>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-ash/55">
+                    Yesterday
+                  </h3>
+                  <p className="mt-2 max-w-sm text-xs leading-relaxed text-ash/60">
+                    These were tracked yesterday. Tap any row to bring it back
+                    into today as a fresh entry.
+                  </p>
+                </div>
+                <span className="shrink-0 rounded-full border border-parchment/10 bg-surface/40 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-ash/50">
+                  {visibleYesterdayEntries.length} items
+                </span>
+              </div>
 
               <div className="grid gap-2">
-                {visibleYesterdayEntries.map((entry) => (
-                  <div
-                    key={entry.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => reactivateEntry(entry)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        reactivateEntry(entry);
-                      }
-                    }}
-                    className="group flex items-center justify-between gap-4 rounded-xl border border-parchment/10 bg-void/20 px-4 py-3 opacity-60 transition-all hover:bg-surface/50 hover:opacity-100 active:scale-[0.99]"
-                  >
-                    <p className="min-w-0 flex-1 truncate text-xs text-parchment/75">
-                      {entry.vasanaText}
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs tabular-nums text-ash/50">
-                        {entry.count}
-                      </span>
-                      <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-gold opacity-0 transition-opacity group-hover:opacity-100">
-                        Revive
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                {visibleYesterdayEntries.map((entry) => {
+                  const meta = TYPE_META[entry.vasanaType];
+
+                  return (
+                    <button
+                      key={entry.id}
+                      type="button"
+                      onClick={() => reactivateEntry(entry)}
+                      className="group flex w-full items-center justify-between gap-4 rounded-xl border border-parchment/10 bg-void/20 px-4 py-3 text-left opacity-55 transition-all grayscale hover:bg-surface/55 hover:opacity-100 hover:grayscale-0 active:scale-[0.99]"
+                      aria-label={`Revive yesterday's vasana: ${entry.vasanaText}`}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span
+                            className={[
+                              "h-1.5 w-1.5 rounded-full",
+                              meta.dotClass,
+                            ].join(" ")}
+                          />
+                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-ash/45">
+                            {meta.label}
+                          </span>
+                        </div>
+                        <p className="truncate text-xs leading-relaxed text-parchment/72">
+                          {entry.vasanaText}
+                        </p>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-3">
+                        <span className="text-xs tabular-nums text-ash/45">
+                          {entry.count}
+                        </span>
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-gold/70 opacity-0 transition-opacity group-hover:opacity-100">
+                          Revive
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-            </div>
+            </section>
           )}
           </section>
         </div>
