@@ -15,6 +15,7 @@ import { auth, provider, db } from "./firebase.js";
 import {
   NOURISHING,
   LIMITING,
+  NEUTRAL,
   VASANA_TYPES,
   TYPE_META,
   getTodayStr,
@@ -49,19 +50,22 @@ function SignInScreen({ onSignIn }) {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-void px-6">
-      <div className="w-full max-w-sm">
-        <div className="mb-12 text-center">
-          <h1 className="font-display text-4xl tracking-tight text-parchment">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-void px-6">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-0 h-72 w-[120%] -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(179,155,115,0.07),transparent_62%)]" />
+      </div>
+      <div className="relative w-full max-w-sm rounded-[2rem] border border-parchment/10 bg-surface/90 p-5 shadow-card backdrop-blur-sm">
+        <div className="mb-10 text-center">
+          <h1 className="font-display text-5xl tracking-tight text-parchment">
             Vasana
           </h1>
-          <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.4em] text-ash/40">
-            Witness. Know. Be.
+          <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.3em] text-ash/70">
+            Open. Calm. Simple.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-parchment/5 bg-surface p-8 shadow-card">
-          <p className="text-center text-sm leading-relaxed text-ash/80">
+        <div className="rounded-[1.5rem] border border-parchment/10 bg-void/40 p-6">
+          <p className="text-center text-sm leading-relaxed text-ash/90">
             Each vasana is a window into your conditioning. Observe without
             judgment — simply notice what arises and how often.
           </p>
@@ -70,7 +74,7 @@ function SignInScreen({ onSignIn }) {
             type="button"
             onClick={handleSignIn}
             disabled={busy}
-            className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl border border-parchment/10 bg-raised py-4 text-sm font-bold uppercase tracking-widest text-parchment/80 transition-all hover:border-parchment/20 hover:bg-surface active:scale-[0.98] disabled:opacity-40"
+            className="mt-7 flex w-full items-center justify-center gap-3 rounded-xl border border-parchment/20 bg-raised py-3.5 text-[11px] font-bold uppercase tracking-[0.2em] text-parchment/90 transition-all hover:border-parchment/30 hover:bg-surface active:scale-[0.98] disabled:opacity-40"
           >
             {/* Google icon */}
             <svg
@@ -97,7 +101,7 @@ function SignInScreen({ onSignIn }) {
             </svg>
             {busy ? "Entering…" : "Enter"}
           </button>
-          {error && <p className="mt-4 text-center text-xs text-ember/80">{error}</p>}
+          {error && <p className="mt-4 text-center text-xs text-ember">{error}</p>}
         </div>
       </div>
     </main>
@@ -109,9 +113,9 @@ function SignInScreen({ onSignIn }) {
 function LoadingScreen() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-void">
-      <div className="flex flex-col items-center gap-4">
-        <div className="h-5 w-5 animate-spin rounded-full border-2 border-ash/10 border-t-ash/40" />
-        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-ash/30">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-parchment/10 bg-surface/80 px-8 py-7">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-ash/20 border-t-gold/55" />
+        <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-ash/70">
           Loading
         </p>
       </div>
@@ -201,6 +205,12 @@ export default function App() {
     .filter((e) => e.vasanaType === LIMITING)
     .reduce((sum, e) => sum + e.count, 0);
 
+  const neutralCount = todayEntries
+    .filter((e) => e.vasanaType === NEUTRAL)
+    .reduce((sum, e) => sum + e.count, 0);
+
+  const totalCount = nourishingCount + limitingCount + neutralCount;
+
   // ── Mutations ─────────────────────────────────────────────────────────────────
 
   async function addVasana(type) {
@@ -271,129 +281,136 @@ export default function App() {
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <main className="min-h-screen bg-void text-parchment">
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4 pb-12 pt-4 sm:px-6 sm:pt-8">
-        {/* ── Header ── */}
-        <header className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-2xl tracking-tight text-parchment">
-              Vasana
-            </h1>
-            <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-ash/50">
-              Witnessing the tendency
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="group flex h-10 w-10 items-center justify-center rounded-full border border-parchment/10 transition-all hover:border-parchment/30 hover:bg-surface"
-            title="Sign out"
-          >
-            <svg
-              className="h-4 w-4 text-ash transition-colors group-hover:text-parchment"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <main className="relative min-h-screen overflow-hidden bg-void text-parchment">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-0 h-72 w-[120%] -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(179,155,115,0.07),transparent_60%)]" />
+        <div className="absolute bottom-0 left-0 h-64 w-full bg-[radial-gradient(ellipse_at_bottom,rgba(163,190,140,0.08),transparent_68%)]" />
+      </div>
+
+      <div className="relative mx-auto w-full max-w-md px-3 pb-8 pt-3 sm:px-6 sm:pb-12 sm:pt-8">
+        <div className="min-h-[calc(100vh-1.5rem)] rounded-[2rem] border border-parchment/10 bg-surface/85 p-4 shadow-card backdrop-blur-sm sm:min-h-[calc(100vh-4rem)] sm:p-6">
+          {/* ── Header ── */}
+          <header className="mb-6 flex items-start justify-between">
+            <div>
+              <p className="mb-2 inline-flex items-center rounded-full border border-gold/20 bg-gold/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gold/70">
+                Today {formatToday()}
+              </p>
+              <h1 className="font-display text-[clamp(1.8rem,6vw,2.25rem)] leading-none text-parchment">
+                Vasana
+              </h1>
+              <p className="mt-1 text-xs tracking-wide text-ash/80">
+                Witness with softness, record with clarity.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="group inline-flex items-center gap-2 rounded-full border border-parchment/15 bg-void/50 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-ash transition-all hover:border-parchment/30 hover:text-parchment active:scale-[0.98]"
+              title="Sign out"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-          </button>
-        </header>
+              <svg
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Exit
+            </button>
+          </header>
 
-        {/* Stats Summary */}
-        <div className="mb-10 grid grid-cols-3 gap-4">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-ash/40">
-              Nourishing
-            </span>
-            <span className="mt-1 text-2xl font-light text-moss">
-              {nourishingCount}
-            </span>
-          </div>
-          <div className="flex flex-col border-x border-parchment/5 px-4 text-center">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-ash/40">
-              Limiting
-            </span>
-            <span className="mt-1 text-2xl font-light text-ember">
-              {limitingCount}
-            </span>
-          </div>
-          <div className="flex flex-col text-right">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-ash/40">
-              Today
-            </span>
-            <span className="mt-1 text-sm font-medium text-parchment/80">
-              {new Date().toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}
-            </span>
-          </div>
-        </div>
-
-        {/* ── Input + list section ── */}
-        <section className="space-y-12">
-          {/* Input form */}
-          <div className="relative overflow-hidden rounded-3xl border border-parchment/5 bg-surface p-6 shadow-card">
-            <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-parchment/[0.02] blur-2xl" />
-            <div className="relative space-y-4">
-              <textarea
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={handleKeyDown}
-                rows={2}
-                placeholder="Notice a tendency…"
-                className="w-full appearance-none resize-none bg-transparent px-0 text-lg text-parchment outline-none transition placeholder:text-ash/30"
-              />
-
-              <div className="flex flex-wrap gap-2">
-                {VASANA_TYPES.map((type) => {
-                  const meta = TYPE_META[type];
-                  const isActive = draft.trim().length > 0;
-                  return (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => addVasana(type)}
-                      disabled={!isActive}
-                      className={[
-                        "flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-all active:scale-[0.97] disabled:opacity-20 disabled:grayscale",
-                        meta.btnClass,
-                      ].join(" ")}
-                    >
-                      <span
-                        className={[
-                          "h-1.5 w-1.5 rounded-full",
-                          meta.dotClass,
-                        ].join(" ")}
-                      />
-                      {meta.label}
-                    </button>
-                  );
-                })}
+          {/* Stats Summary */}
+          <div className="mb-8 overflow-hidden rounded-2xl border border-parchment/10 bg-raised/60">
+            <div className="grid grid-cols-3 divide-x divide-parchment/10">
+              <div className="px-3 py-3">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ash/70">
+                  Nourishing
+                </p>
+                <p className="mt-1 text-[1.9rem] font-light tabular-nums text-moss">
+                  {nourishingCount}
+                </p>
               </div>
+              <div className="px-3 py-3 text-center">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ash/70">
+                  Limiting
+                </p>
+                <p className="mt-1 text-[1.9rem] font-light tabular-nums text-ember">
+                  {limitingCount}
+                </p>
+              </div>
+              <div className="px-3 py-3 text-right">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ash/70">
+                  Neutral
+                </p>
+                <p className="mt-1 text-[1.9rem] font-light tabular-nums text-clay">
+                  {neutralCount}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between border-t border-parchment/10 px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-ash/70">
+              <span>Total today</span>
+              <span className="tabular-nums text-parchment/85">{totalCount}</span>
             </div>
           </div>
 
-          {/* ── In Focus card ── */}
+          {/* ── Input + list section ── */}
+          <section className="space-y-10">
+            {/* Input form */}
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-parchment/10 bg-void/40 p-4">
+              <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-moss/10 blur-2xl" />
+              <div className="relative space-y-4">
+                <textarea
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  rows={2}
+                  placeholder="What tendency appeared right now?"
+                  className="w-full appearance-none resize-none rounded-2xl border border-parchment/10 bg-surface/80 px-4 py-3 text-base leading-relaxed text-parchment outline-none transition placeholder:text-ash/60 focus:border-gold/40"
+                />
+
+                <div className="grid grid-cols-3 gap-2">
+                  {VASANA_TYPES.map((type) => {
+                    const meta = TYPE_META[type];
+                    const isActive = draft.trim().length > 0;
+                    return (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => addVasana(type)}
+                        disabled={!isActive}
+                        className={[
+                          "inline-flex items-center justify-center rounded-xl px-2 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] transition-all active:scale-[0.97] disabled:opacity-25 disabled:grayscale",
+                          meta.btnClass,
+                        ].join(" ")}
+                      >
+                        {meta.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* ── In Focus card ── */}
           {focusedEntry &&
             (() => {
               const meta = TYPE_META[focusedEntry.vasanaType];
               return (
-                <div className="relative">
+                <div className="relative rounded-[1.75rem] border border-gold/30 bg-gold/[0.05] p-4">
                   <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold/60">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.26em] text-gold/75">
                       In Focus
                     </h3>
                     <button
                       type="button"
                       onClick={() => toggleFocus(focusedEntry.id)}
-                      className="text-[10px] font-bold uppercase tracking-widest text-ash/40 transition-colors hover:text-ash"
+                      className="text-[10px] font-bold uppercase tracking-[0.2em] text-ash/70 transition-colors hover:text-parchment"
                     >
                       Clear
                     </button>
@@ -408,25 +425,25 @@ export default function App() {
                         incrementEntry(focusedEntry.id);
                       }
                     }}
-                    className="group relative w-full cursor-pointer select-none rounded-[2rem] border border-gold/20 bg-gold/[0.03] p-8 text-center transition-all hover:bg-gold/[0.05] active:scale-[0.99]"
+                    className="group relative w-full cursor-pointer select-none rounded-[1.5rem] border border-gold/20 bg-void/40 p-6 text-center transition-all hover:bg-gold/[0.08] active:scale-[0.99]"
                   >
                     <div className="mb-6 flex flex-col items-center gap-2">
                       <span className="text-6xl font-extralight tracking-tight text-gold">
                         {focusedEntry.count}
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold/50">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold/60">
                         Occurrences
                       </span>
                     </div>
 
-                    <p className="text-xl font-light leading-relaxed text-parchment">
+                    <p className="text-lg font-light leading-relaxed text-parchment">
                       {focusedEntry.vasanaText}
                     </p>
 
                     <div className="mt-8 flex justify-center">
                       <span
                         className={[
-                          "inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest",
+                          "inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em]",
                           meta.pillClass,
                         ].join(" ")}
                       >
@@ -450,15 +467,12 @@ export default function App() {
               .map((e, i) => ({ entry: e, idx: i }))
               .filter(({ entry }) => entry.id !== focusedEntryId);
 
-            if (
-              todayEntries.length === 0 &&
-              visibleYesterdayEntries.length === 0
-            ) {
+            if (todayEntries.length === 0 && visibleYesterdayEntries.length === 0) {
               return (
-                <div className="flex flex-col items-center px-6 py-20 text-center">
-                  <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-parchment/[0.02] text-ash/20">
+                <div className="flex flex-col items-center rounded-[1.75rem] border border-parchment/10 bg-void/30 px-6 py-16 text-center">
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-parchment/10 bg-parchment/[0.03] text-ash/40">
                     <svg
-                      className="h-8 w-8"
+                      className="h-7 w-7"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -471,11 +485,11 @@ export default function App() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-display text-xl text-parchment/40">
-                    The slate is clear
+                  <h3 className="font-display text-xl text-parchment/70">
+                    Quiet mind, clear slate
                   </h3>
-                  <p className="mt-2 max-w-xs text-sm leading-relaxed text-ash/40">
-                    Observe the mind. When a pattern arises, record its quality.
+                  <p className="mt-2 max-w-xs text-sm leading-relaxed text-ash/70">
+                    When a thought pattern appears, capture it once. Repetitions are one tap away.
                   </p>
                 </div>
               );
@@ -485,7 +499,7 @@ export default function App() {
 
             return (
               <div className="space-y-4">
-                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-ash/30">
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-ash/50">
                   Recent
                 </h3>
                 <div className="grid gap-3">
@@ -504,7 +518,7 @@ export default function App() {
                           }
                         }}
                         className={[
-                          "group relative flex items-center justify-between gap-4 rounded-2xl border bg-surface/40 p-4 transition-all hover:bg-surface active:scale-[0.99]",
+                          "group relative flex items-center justify-between gap-4 rounded-2xl border bg-void/30 p-4 transition-all hover:bg-surface/60 active:scale-[0.99]",
                           meta.cardBorderClass,
                         ].join(" ")}
                       >
@@ -518,7 +532,7 @@ export default function App() {
                             />
                             <span
                               className={[
-                                "text-[9px] font-bold uppercase tracking-widest",
+                                "text-[9px] font-bold uppercase tracking-[0.2em]",
                                 meta.countTextClass,
                               ].join(" ")}
                             >
@@ -533,7 +547,7 @@ export default function App() {
                         <div className="flex shrink-0 flex-col items-end gap-1">
                           <span
                             className={[
-                              "text-xl font-light tabular-nums leading-none",
+                              "text-2xl font-light tabular-nums leading-none",
                               meta.countTextClass,
                             ].join(" ")}
                           >
@@ -545,7 +559,7 @@ export default function App() {
                               e.stopPropagation();
                               toggleFocus(entry.id);
                             }}
-                            className="text-[9px] font-bold uppercase tracking-widest text-ash/30 opacity-0 transition-all group-hover:opacity-100 hover:text-gold"
+                            className="text-[9px] font-bold uppercase tracking-[0.18em] text-ash/30 opacity-0 transition-all group-hover:opacity-100 hover:text-gold"
                           >
                             Focus
                           </button>
@@ -560,8 +574,8 @@ export default function App() {
 
           {/* ── Yesterday's entries ── */}
           {visibleYesterdayEntries.length > 0 && (
-            <div className="pt-8">
-              <h3 className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-ash/20">
+            <div className="border-t border-parchment/10 pt-6">
+              <h3 className="mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-ash/50">
                 Yesterday
               </h3>
 
@@ -578,16 +592,16 @@ export default function App() {
                         reactivateEntry(entry);
                       }
                     }}
-                    className="group flex items-center justify-between gap-4 rounded-xl border border-parchment/[0.03] bg-parchment/[0.01] px-4 py-3 opacity-40 transition-all hover:bg-parchment/[0.03] hover:opacity-100 active:scale-[0.99]"
+                    className="group flex items-center justify-between gap-4 rounded-xl border border-parchment/10 bg-void/20 px-4 py-3 opacity-60 transition-all hover:bg-surface/50 hover:opacity-100 active:scale-[0.99]"
                   >
-                    <p className="min-w-0 flex-1 truncate text-xs text-parchment/60">
+                    <p className="min-w-0 flex-1 truncate text-xs text-parchment/75">
                       {entry.vasanaText}
                     </p>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs tabular-nums text-ash/30">
+                      <span className="text-xs tabular-nums text-ash/50">
                         {entry.count}
                       </span>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-accent opacity-0 transition-opacity group-hover:opacity-100">
+                      <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-gold opacity-0 transition-opacity group-hover:opacity-100">
                         Revive
                       </span>
                     </div>
@@ -596,7 +610,8 @@ export default function App() {
               </div>
             </div>
           )}
-        </section>
+          </section>
+        </div>
       </div>
     </main>
   );

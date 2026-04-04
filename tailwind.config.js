@@ -4,23 +4,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Deep, contemplative background palette
-        void: "#0f1115",    // deeper page background
-        surface: "#1a1d23",  // main card background
-        raised: "#252932",   // input and interactive elements
+        // Minimal Obsidian-inspired dark neutrals (muted, low-contrast)
+        void: "#232729",
+        surface: "#2f3437",
+        raised: "#3e4245",
 
-        // Refined typography
-        parchment: "#f2efea", // slightly warmer/brighter primary text
-        ash: "#949ba6",      // more balanced muted text
+        // Softer text hierarchy
+        parchment: "#d8dee9",
+        ash: "#9ea7b3",
 
-        // Cohesive, sophisticated accents
-        moss: "#88d6a7",    // Nourishing (fresher)
-        ember: "#ff9f80",   // Limiting (softer, more coral)
-        clay: "#a3b1c2",    // Neutral (cooler)
+        // Semantic accents kept color-coded, but toned down
+        moss: "#b4cd9d",
+        ember: "#e09a82",
+        clay: "#9ab3cd",
 
         // Special accents
-        gold: "#d4af37",    // Focus / In-focus accent
-        accent: "#6366f1",  // Subtle indigo for UI actions
+        gold: "#b39b73",
+        accent: "#88c0d0",
       },
       boxShadow: {
         card: "0 10px 40px -10px rgba(0, 0, 0, 0.5)",
@@ -32,8 +32,8 @@ export default {
         "5xl": "2.5rem",
       },
       fontFamily: {
-        display: ["Georgia", "serif"],
-        body: ["Helvetica", "Arial", "sans-serif"],
+        display: ["Fraunces", "serif"],
+        body: ["Instrument Sans", "sans-serif"],
       },
     },
   },

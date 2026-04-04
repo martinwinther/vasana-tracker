@@ -1,13 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: "Instrument Sans", sans-serif;
     line-height: 1.5;
     font-weight: 400;
-    color: #ece7de;
-    background: #16181d;
+    color: #d8dee9;
+    background: #232729;
     color-scheme: dark;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -16,18 +18,27 @@
 }
 
 html {
-    background: #16181d;
+    background: #232729;
 }
 
 body {
     margin: 0;
     min-width: 320px;
+    font-family: "Instrument Sans", sans-serif;
+    background:
+            radial-gradient(110% 60% at 50% -10%, rgba(136, 160, 185, 0.14), transparent 62%),
+            radial-gradient(90% 58% at 50% 110%, rgba(163, 190, 140, 0.1), transparent 64%),
+            #232729;
 }
 
 button,
 textarea,
 input {
     font: inherit;
+}
+
+button {
+    touch-action: manipulation;
 }
 
 * {
